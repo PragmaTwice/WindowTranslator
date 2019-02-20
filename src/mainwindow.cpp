@@ -18,6 +18,10 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
 
     ui->shotView->setDragMode(QGraphicsView::ScrollHandDrag);
+    ui->languageComboBox->setVisible(false);
+
+    ui->languageComboBox->addItems(QStringList::fromVector(getSupportedLanguages()));
+    ui->languageComboBox->setCurrentText("zh");
 }
 
 MainWindow::~MainWindow()
@@ -106,8 +110,11 @@ void MainWindow::wheelEvent(QWheelEvent *ZoomEvent)
 
 void MainWindow::on_translateCheckBox_stateChanged(int arg)
 {
+    ui->languageComboBox->setVisible(arg);
+
     if(arg && ui->ocrCheckBox->checkState() == Qt::Unchecked)
     {
         ui->translateCheckBox->setCheckState(Qt::Unchecked);
     }
+
 }

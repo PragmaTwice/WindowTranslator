@@ -107,3 +107,45 @@ OCRResult doOCR(const QPixmap& pixmap)
 
     return ocrResult;
 }
+
+
+QVector<QString> getSupportedLanguages()
+{
+    static QString key = getKey();
+
+    QNetworkAccessManager manager;
+    QEventLoop loop;
+
+    QUrl url("https://translation.googleapis.com/language/translate/v2/languages?key=" + key);
+    QNetworkRequest request(url);
+
+    QNetworkReply *reply = manager.get(request);
+    QObject::connect(reply,SIGNAL(finished()),&loop,SLOT(quit()));
+
+    loop.exec();
+
+    QJsonDocument result = QJsonDocument::fromJson(reply->readAll());
+
+    auto errorProcess = [](const QJsonObject& obj){
+        auto error = obj.find("error");
+        if(error != obj.end())
+        {
+            qDebug() << "error: " << error.value().toObject()["message"].toString();
+            return false;
+        }
+
+        return true;
+    };
+
+    auto object = result.object();
+    QVector<QString> res;
+    if(errorProcess(object))
+    {
+        for(auto&& lang : object["data"].toObject()["languages"].toArray())
+        {
+            res.push_back(lang.toObject()["language"].toString());
+        }
+    }
+
+    return res;
+}

@@ -18,4 +18,6 @@ QString getKey();
 
 OCRResult doOCR(const QPixmap& pixmap);
 
+QVector<QString> getSupportedLanguages();
+
 #endif // GOOGLEAPIS_H

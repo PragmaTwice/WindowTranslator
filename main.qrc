@@ -1,0 +1,11 @@
+<RCC>
+    <qresource prefix="/cursor">
+        <file alias="cross">img/icon_line_crosshair_24.png</file>
+    </qresource>
+    <qresource prefix="/icon">
+        <file alias="refresh">img/refresh.png</file>
+    </qresource>
+    <qresource prefix="/txt">
+        <file alias="key">key</file>
+    </qresource>
+</RCC>

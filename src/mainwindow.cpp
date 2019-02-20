@@ -114,7 +114,7 @@ void MainWindow::on_translateCheckBox_stateChanged(int arg)
 
     if(arg && ui->ocrCheckBox->checkState() == Qt::Unchecked)
     {
-        ui->translateCheckBox->setCheckState(Qt::Unchecked);
+        ui->ocrCheckBox->setCheckState(Qt::Checked);
     }
 
 }

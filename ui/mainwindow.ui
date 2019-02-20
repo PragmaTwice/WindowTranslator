@@ -99,6 +99,9 @@
          </spacer>
         </item>
         <item>
+         <widget class="QComboBox" name="languageComboBox"/>
+        </item>
+        <item>
          <layout class="QVBoxLayout" name="functionVLayout">
           <item>
            <widget class="QCheckBox" name="ocrCheckBox">

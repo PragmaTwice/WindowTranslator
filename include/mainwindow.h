@@ -22,6 +22,7 @@ private slots:
     void on_translateCheckBox_stateChanged(int arg1);
 
     void on_shotView_mouseMoved(QPointF point);
+    void on_shotView_mousePressed(QPointF);
 
 private:
     Ui::MainWindow *ui;

@@ -8,6 +8,7 @@
 #include <QMouseEvent>
 #include <QPixmap>
 #include <QGraphicsPixmapItem>
+#include <QClipboard>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -24,7 +25,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->languageComboBox->setCurrentText("zh");
 
     ui->shotView->setMouseTracking(true);
-    connect(ui->shotView, SIGNAL(mousePressed(QPointF)), SLOT(on_shotView_mouseMoved(QPointF)));
+    connect(ui->shotView, SIGNAL(mousePressed(QPointF)), SLOT(on_shotView_mousePressed(QPointF)));
+    connect(ui->shotView, SIGNAL(mouseMoved(QPointF)), SLOT(on_shotView_mouseMoved(QPointF)));
 
     item.setTransformationMode(Qt::SmoothTransformation);
     scene.addItem(&item);
@@ -132,7 +134,7 @@ void MainWindow::on_shotView_mouseMoved(QPointF point)
         {
             isActive = true;
             item.setPixmap(DrawOCRBox(nowShot, nowOCRRes, &res));
-            ui->titleLabel->setText("<p style='color:gray;'>" + res.description + "</p>");
+            ui->titleLabel->setText(res.description);
         }
         else
         {
@@ -145,4 +147,9 @@ void MainWindow::on_shotView_mouseMoved(QPointF point)
         }
     }
 
+}
+
+void MainWindow::on_shotView_mousePressed(QPointF)
+{
+    QApplication::clipboard()->setText(ui->titleLabel->text());
 }

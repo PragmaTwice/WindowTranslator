@@ -110,6 +110,7 @@ void MainWindow::on_translateCheckBox_stateChanged(int arg)
 
 void MainWindow::on_shotView_mouseMoved(QPointF point)
 {
+    static bool isActive = false;
     if(ui->ocrCheckBox->checkState() == Qt::Checked)
     {
         OCRBox res;
@@ -129,10 +130,17 @@ void MainWindow::on_shotView_mouseMoved(QPointF point)
         }
         if(!res.description.isEmpty())
         {
-            ui->titleLabel->setText("<span style='color:gray;'>" + res.description + "</span>");
+            isActive = true;
+            item.setPixmap(DrawOCRBox(nowShot, nowOCRRes, &res));
+            ui->titleLabel->setText("<p style='color:gray;'>" + res.description + "</p>");
         }
         else
         {
+            if(isActive)
+            {
+                item.setPixmap(DrawOCRBox(nowShot, nowOCRRes));
+                isActive = false;
+            }
             ui->titleLabel->setText(nowTitle);
         }
     }

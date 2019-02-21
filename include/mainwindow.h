@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include "googleapis.h"
 
 namespace Ui {
 class MainWindow;
@@ -23,7 +24,11 @@ private slots:
 private:
     Ui::MainWindow *ui;
     bool isGettingPoint;
+
     WId nowWid;
+    QString nowTitle;
+    QPixmap nowShot;
+    OCRResult nowOCRRes;
 
     void refreshScreenshot();
 

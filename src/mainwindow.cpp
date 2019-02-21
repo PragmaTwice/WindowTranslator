@@ -35,14 +35,15 @@ MainWindow::~MainWindow()
 void MainWindow::refreshScreenshot()
 {
     QPixmap screenshot = screenshotFromWId(nowWid);
+    nowShot = screenshot;
 
     QString title = titleFromWId(nowWid);
     qDebug() << "title: " << title;
 
     if(ui->ocrCheckBox->checkState() == Qt::Checked)
     {
-        OCRResult result = doOCR(screenshot);
-        screenshot = DrawOCRBox(screenshot, result);
+        nowOCRRes = doOCR(screenshot);
+        screenshot = DrawOCRBox(screenshot, nowOCRRes);
     }
 
     QGraphicsScene* scene = new QGraphicsScene();
@@ -50,9 +51,10 @@ void MainWindow::refreshScreenshot()
     item->setTransformationMode(Qt::SmoothTransformation);
     scene->addItem(item);
 
+    nowTitle = title;
 
     ui->shotView->setScene(scene);
-    ui->titleLabel->setText(title);
+    ui->titleLabel->setText(nowTitle);
 
 }
 
@@ -108,4 +110,31 @@ void MainWindow::on_translateCheckBox_stateChanged(int arg)
 
 void MainWindow::on_shotView_mouseMoved(QPointF point)
 {
+    if(ui->ocrCheckBox->checkState() == Qt::Checked)
+    {
+        OCRBox res;
+        bool isFirst = true;
+        for(auto&& box : nowOCRRes)
+        {
+            if(isFirst)
+            {
+                isFirst = false;
+                continue;
+            }
+            if(QPolygonF(box.vertices).containsPoint(point, Qt::OddEvenFill))
+            {
+                res = box;
+                break;
+            }
+        }
+        if(!res.description.isEmpty())
+        {
+            ui->titleLabel->setText("<span style='color:gray;'>" + res.description + "</span>");
+        }
+        else
+        {
+            ui->titleLabel->setText(nowTitle);
+        }
+    }
+
 }

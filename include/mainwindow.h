@@ -18,6 +18,8 @@ public:
 private slots:
     void on_translateCheckBox_stateChanged(int arg1);
 
+    void on_shotView_mouseMoved(QPointF point);
+
 private:
     Ui::MainWindow *ui;
     bool isGettingPoint;

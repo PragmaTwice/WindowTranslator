@@ -24,6 +24,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->languageComboBox->setCurrentText("zh");
 
     ui->shotView->setMouseTracking(true);
+    connect(ui->shotView, SIGNAL(mousePressed(QPointF)), SLOT(on_shotView_mouseMoved(QPointF)));
 }
 
 MainWindow::~MainWindow()
@@ -103,4 +104,8 @@ void MainWindow::on_translateCheckBox_stateChanged(int arg)
         ui->ocrCheckBox->setCheckState(Qt::Checked);
     }
 
+}
+
+void MainWindow::on_shotView_mouseMoved(QPointF point)
+{
 }

@@ -1,5 +1,19 @@
 #include "photoview.h"
 #include <QWheelEvent>
+#include <QDebug>
+#include <QGraphicsItem>
+
+PhotoView::PhotoView(QWidget *parent)
+    :QGraphicsView(parent)
+{
+
+}
+
+PhotoView::PhotoView(QGraphicsScene *scene, QWidget *parent)
+    :QGraphicsView(scene, parent)
+{
+
+}
 
 void PhotoView::wheelEvent(QWheelEvent * zoomEvent)
 {
@@ -20,14 +34,20 @@ void PhotoView::wheelEvent(QWheelEvent * zoomEvent)
 void PhotoView::mousePressEvent(QMouseEvent *event)
 {
     QGraphicsView::mousePressEvent(event);
+
+    emit mousePressed(mapToScene(event->pos()));
 }
 
 void PhotoView::mouseMoveEvent(QMouseEvent *event)
 {
     QGraphicsView::mouseMoveEvent(event);
+
+    emit mouseMoved(mapToScene(event->pos()));
 }
 
 void PhotoView::mouseReleaseEvent(QMouseEvent *event)
 {
     QGraphicsView::mouseReleaseEvent(event);
+
+    emit mouseReleased(mapToScene(event->pos()));
 }

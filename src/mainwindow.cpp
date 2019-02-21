@@ -22,6 +22,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
     ui->languageComboBox->addItems(QStringList::fromVector(getSupportedLanguages()));
     ui->languageComboBox->setCurrentText("zh");
+
+    ui->shotView->setMouseTracking(true);
 }
 
 MainWindow::~MainWindow()
@@ -89,22 +91,6 @@ void MainWindow::mouseReleaseEvent(QMouseEvent *event)
         isGettingPoint = false;
         ui->pointLabel->setText("<img src=':/cursor/cross'/>");
         ui->pointLabel->setEnabled(true);
-    }
-}
-
-void MainWindow::wheelEvent(QWheelEvent *ZoomEvent)
-{
-    ui->shotView->setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
-    static const double scaleFactor = 1.15;
-    static double currentScale = 1.0;  // stores the current scale value.
-    static const double scaleMin = .1; // defines the min scale limit.
-
-    if(ZoomEvent->delta() > 0) {
-        ui->shotView->scale(scaleFactor, scaleFactor);
-        currentScale *= scaleFactor;
-    } else if (currentScale > scaleMin) {
-        ui->shotView->scale(1 / scaleFactor, 1 / scaleFactor);
-        currentScale /= scaleFactor;
     }
 }
 

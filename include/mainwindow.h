@@ -27,8 +27,6 @@ private:
 
     void mousePressEvent(QMouseEvent *event) override;
     void mouseReleaseEvent(QMouseEvent *event) override;
-
-    void wheelEvent(QWheelEvent *ZoomEvent) override;
 };
 
 #endif // MAINWINDOW_H

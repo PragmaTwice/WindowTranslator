@@ -25,6 +25,9 @@ MainWindow::MainWindow(QWidget *parent) :
 
     ui->shotView->setMouseTracking(true);
     connect(ui->shotView, SIGNAL(mousePressed(QPointF)), SLOT(on_shotView_mouseMoved(QPointF)));
+
+    item.setTransformationMode(Qt::SmoothTransformation);
+    scene.addItem(&item);
 }
 
 MainWindow::~MainWindow()
@@ -46,14 +49,11 @@ void MainWindow::refreshScreenshot()
         screenshot = DrawOCRBox(screenshot, nowOCRRes);
     }
 
-    QGraphicsScene* scene = new QGraphicsScene();
-    QGraphicsPixmapItem* item = new QGraphicsPixmapItem(screenshot);
-    item->setTransformationMode(Qt::SmoothTransformation);
-    scene->addItem(item);
+    item.setPixmap(screenshot);
 
     nowTitle = title;
 
-    ui->shotView->setScene(scene);
+    ui->shotView->setScene(&scene);
     ui->titleLabel->setText(nowTitle);
 
 }

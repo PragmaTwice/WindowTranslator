@@ -1,7 +1,7 @@
 #include "imgprocess.h"
 #include <QPainter>
 
-QPixmap DrawOCRBox(const QPixmap &origin, const OCRResult &ocrResult)
+QPixmap DrawOCRBox(const QPixmap &origin, const OCRResult &ocrResult, const OCRBox* activeBox)
 {
     QPixmap pixmap = origin;
 
@@ -12,6 +12,12 @@ QPixmap DrawOCRBox(const QPixmap &origin, const OCRResult &ocrResult)
     for(auto&& box : ocrResult)
     {
         painter.drawPolygon(box.vertices);
+    }
+
+    painter.setPen(Qt::red);
+    if(activeBox)
+    {
+        painter.drawPolygon(activeBox->vertices);
     }
 
     return pixmap;

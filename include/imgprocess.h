@@ -3,6 +3,6 @@
 
 #include "googleapis.h"
 
-QPixmap DrawOCRBox(const QPixmap& origin, const OCRResult& ocrResult);
+QPixmap DrawOCRBox(const QPixmap& origin, const OCRResult& ocrResult, const OCRBox *activeBox = nullptr);
 
 #endif // IMGPROCESS_H

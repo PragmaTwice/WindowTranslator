@@ -2,6 +2,8 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QGraphicsScene>
+#include <QGraphicsPixmapItem>
 #include "googleapis.h"
 
 namespace Ui {
@@ -29,6 +31,9 @@ private:
     QString nowTitle;
     QPixmap nowShot;
     OCRResult nowOCRRes;
+
+    QGraphicsScene scene;
+    QGraphicsPixmapItem item;
 
     void refreshScreenshot();
 

@@ -1,7 +1,7 @@
-#include "graphicsviewwithoutwheel.h"
+#include "photoview.h"
 #include <QWheelEvent>
 
-void GraphicsViewWithoutWheel::wheelEvent(QWheelEvent * zoomEvent)
+void PhotoView::wheelEvent(QWheelEvent * zoomEvent)
 {
     setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
     static const double scaleFactor = 1.15;
@@ -15,4 +15,19 @@ void GraphicsViewWithoutWheel::wheelEvent(QWheelEvent * zoomEvent)
         scale(1 / scaleFactor, 1 / scaleFactor);
         currentScale /= scaleFactor;
     }
+}
+
+void PhotoView::mousePressEvent(QMouseEvent *event)
+{
+    QGraphicsView::mousePressEvent(event);
+}
+
+void PhotoView::mouseMoveEvent(QMouseEvent *event)
+{
+    QGraphicsView::mouseMoveEvent(event);
+}
+
+void PhotoView::mouseReleaseEvent(QMouseEvent *event)
+{
+    QGraphicsView::mouseReleaseEvent(event);
 }

@@ -27,18 +27,18 @@ SOURCES += \
         src/main.cpp \
         src/mainwindow.cpp \
     src/screenshot.cpp \
-    src/graphicsviewwithoutwheel.cpp \
     src/googleapis.cpp \
-    src/imgprocess.cpp
+    src/imgprocess.cpp \
+    src/photoview.cpp
 
 INCLUDEPATH += $$PWD/include
 
 HEADERS += \
         include/mainwindow.h \
     include/screenshot.h \
-    include/graphicsviewwithoutwheel.h \
     include/googleapis.h \
-    include/imgprocess.h
+    include/imgprocess.h \
+    include/photoview.h
 
 FORMS += \
         ui/mainwindow.ui

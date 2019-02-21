@@ -132,7 +132,7 @@
        </widget>
       </item>
       <item>
-       <widget class="GraphicsViewWithoutWheel" name="shotView">
+       <widget class="PhotoView" name="shotView">
         <property name="frameShape">
          <enum>QFrame::Panel</enum>
         </property>
@@ -146,9 +146,9 @@
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
-   <class>GraphicsViewWithoutWheel</class>
+   <class>PhotoView</class>
    <extends>QGraphicsView</extends>
-   <header>graphicsviewwithoutwheel.h</header>
+   <header>photoview.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

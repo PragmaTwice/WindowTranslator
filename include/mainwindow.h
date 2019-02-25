@@ -24,9 +24,13 @@ private slots:
     void on_shotView_mouseMoved(QPointF point);
     void on_shotView_mousePressed(QPointF);
 
+    void on_ocrCheckBox_stateChanged(int arg1);
+
 private:
     Ui::MainWindow *ui;
     bool isGettingPoint;
+
+    bool isLoading;
 
     WId nowWid;
     QString nowTitle;

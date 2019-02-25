@@ -14,6 +14,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
     isGettingPoint(false),
+    isLoading(false),
     nowWid(0)
 {
     ui->setupUi(this);
@@ -32,6 +33,7 @@ MainWindow::MainWindow(QWidget *parent) :
     scene.addItem(&item);
 
     ui->translateLabel->setVisible(false);
+    ui->translateCheckBox->setVisible(false);
 }
 
 MainWindow::~MainWindow()
@@ -41,6 +43,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::refreshScreenshot()
 {
+    isLoading = true;
     QPixmap screenshot = screenshotFromWId(nowWid);
     nowShot = screenshot;
     nowOCRRes = OCRResult();
@@ -65,6 +68,8 @@ void MainWindow::refreshScreenshot()
 
     ui->shotView->setScene(&scene);
     ui->titleLabel->setText(nowTitle);
+
+    isLoading = false;
 
 }
 
@@ -120,51 +125,72 @@ void MainWindow::on_translateCheckBox_stateChanged(int arg)
 
 void MainWindow::on_shotView_mouseMoved(QPointF point)
 {
-    static bool isActive = false;
-    if(ui->ocrCheckBox->checkState() == Qt::Checked)
+    if(!isLoading)
     {
-        OCRBox res;
-        bool isFirst = true;
-        for(auto&& box : nowOCRRes)
+        static bool isActive = false;
+        if(ui->ocrCheckBox->checkState() == Qt::Checked)
         {
-            if(isFirst)
+            OCRBox res;
+            bool isFirst = true;
+            for(auto&& box : nowOCRRes)
             {
-                isFirst = false;
-                continue;
+                if(isFirst)
+                {
+                    isFirst = false;
+                    continue;
+                }
+                if(QPolygonF(box.vertices).containsPoint(point, Qt::OddEvenFill))
+                {
+                    res = box;
+                    break;
+                }
             }
-            if(QPolygonF(box.vertices).containsPoint(point, Qt::OddEvenFill))
+            if(!res.description.isEmpty())
             {
-                res = box;
-                break;
+                isActive = true;
+                item.setPixmap(DrawOCRBox(nowShot, nowOCRRes, &res));
+                ui->titleLabel->setText(res.description);
+                if(ui->translateCheckBox->checkState() == Qt::Checked)
+                {
+                    auto translate = nowTranslateMap.find(res.description);
+                    if(translate != nowTranslateMap.cend())
+                    {
+                        ui->translateLabel->setVisible(true);
+                        ui->translateLabel->setText(translate.value());
+                    }
+                }
             }
-        }
-        if(!res.description.isEmpty())
-        {
-            isActive = true;
-            item.setPixmap(DrawOCRBox(nowShot, nowOCRRes, &res));
-            ui->titleLabel->setText(res.description);
-            auto translate = nowTranslateMap.find(res.description);
-            if(translate != nowTranslateMap.cend())
+            else
             {
-                ui->translateLabel->setVisible(true);
-                ui->translateLabel->setText(translate.value());
+                if(isActive)
+                {
+                    item.setPixmap(DrawOCRBox(nowShot, nowOCRRes));
+                    isActive = false;
+                }
+                ui->titleLabel->setText(nowTitle);
+                ui->translateLabel->setVisible(false);
             }
-        }
-        else
-        {
-            if(isActive)
-            {
-                item.setPixmap(DrawOCRBox(nowShot, nowOCRRes));
-                isActive = false;
-            }
-            ui->titleLabel->setText(nowTitle);
-            ui->translateLabel->setVisible(false);
         }
     }
-
 }
 
 void MainWindow::on_shotView_mousePressed(QPointF)
 {
-    QApplication::clipboard()->setText(ui->titleLabel->text());
+    if(!isLoading)
+    {
+        QApplication::clipboard()->setText(ui->titleLabel->text());
+    }
+}
+
+void MainWindow::on_ocrCheckBox_stateChanged(int arg)
+{
+    if(arg == 0)
+    {
+        ui->translateCheckBox->setChecked(false);
+        ui->translateCheckBox->setVisible(false);
+    }
+    else
+    {
+        ui->translateCheckBox->setVisible(true);
+    }
 }

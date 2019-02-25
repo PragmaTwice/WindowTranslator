@@ -20,4 +20,8 @@ OCRResult doOCR(const QPixmap& pixmap);
 
 QVector<QString> getSupportedLanguages();
 
+QVector<QString> doTranslate(const QVector<QString>& text, const QString& targetLang);
+
+QMap<QString, QString> translateOCRResult(const OCRResult& ocr, const QString &targetLang);
+
 #endif // GOOGLEAPIS_H

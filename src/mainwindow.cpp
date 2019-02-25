@@ -30,6 +30,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
     item.setTransformationMode(Qt::SmoothTransformation);
     scene.addItem(&item);
+
+    ui->translateLabel->setVisible(false);
 }
 
 MainWindow::~MainWindow()
@@ -41,6 +43,7 @@ void MainWindow::refreshScreenshot()
 {
     QPixmap screenshot = screenshotFromWId(nowWid);
     nowShot = screenshot;
+    nowOCRRes = OCRResult();
 
     QString title = titleFromWId(nowWid);
     qDebug() << "title: " << title;
@@ -49,6 +52,11 @@ void MainWindow::refreshScreenshot()
     {
         nowOCRRes = doOCR(screenshot);
         screenshot = DrawOCRBox(screenshot, nowOCRRes);
+
+        if(ui->translateCheckBox->checkState() == Qt::Checked)
+        {
+            nowTranslateMap = translateOCRResult(nowOCRRes, ui->languageComboBox->currentText());
+        }
     }
 
     item.setPixmap(screenshot);
@@ -135,6 +143,12 @@ void MainWindow::on_shotView_mouseMoved(QPointF point)
             isActive = true;
             item.setPixmap(DrawOCRBox(nowShot, nowOCRRes, &res));
             ui->titleLabel->setText(res.description);
+            auto translate = nowTranslateMap.find(res.description);
+            if(translate != nowTranslateMap.cend())
+            {
+                ui->translateLabel->setVisible(true);
+                ui->translateLabel->setText(translate.value());
+            }
         }
         else
         {
@@ -144,6 +158,7 @@ void MainWindow::on_shotView_mouseMoved(QPointF point)
                 isActive = false;
             }
             ui->titleLabel->setText(nowTitle);
+            ui->translateLabel->setVisible(false);
         }
     }
 

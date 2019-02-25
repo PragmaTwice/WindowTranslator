@@ -2,6 +2,7 @@
 #include <QtNetwork/QtNetwork>
 #include <QJsonDocument>
 #include <QMessageBox>
+#include <QUrlQuery>
 
 QDebug operator<<(QDebug dbg, const OCRBox &box)
 {
@@ -148,4 +149,83 @@ QVector<QString> getSupportedLanguages()
     }
 
     return res;
+}
+
+QVector<QString> doTranslate(const QVector<QString> &text, const QString &targetLang)
+{
+    static QString key = getKey();
+
+    QNetworkAccessManager manager;
+    QEventLoop loop;
+
+    QUrl url("https://translation.googleapis.com/language/translate/v2?key=" + key);
+    QNetworkRequest request(url);
+
+    QUrlQuery query;
+    for(auto&& t : text)
+    {
+        query.addQueryItem("q", t);
+    }
+    query.addQueryItem("target", targetLang);
+    query.addQueryItem("format", "text");
+
+    QNetworkReply *reply = manager.post(request, query.toString().toUtf8());
+    QObject::connect(reply,SIGNAL(finished()),&loop,SLOT(quit()));
+
+    loop.exec();
+
+    QJsonDocument result = QJsonDocument::fromJson(reply->readAll());
+
+    auto errorProcess = [](const QJsonObject& obj){
+        auto error = obj.find("error");
+        if(error != obj.end())
+        {
+            qDebug() << "error: " << error.value().toObject()["message"].toString();
+            return false;
+        }
+
+        return true;
+    };
+
+    auto object = result.object();
+    QVector<QString> res;
+    if(errorProcess(object))
+    {
+        for(auto&& translated : object["data"].toObject()["translations"].toArray())
+        {
+            res.push_back(translated.toObject()["translatedText"].toString());
+        }
+    }
+
+    return res;
+}
+
+QMap<QString, QString> translateOCRResult(const OCRResult &ocr, const QString &targetLang)
+{
+    QMap<QString, QString> map;
+
+    QVector<QString> text;
+    bool isFirst = true;
+    for(auto&& box : ocr)
+    {
+        if(isFirst)
+        {
+            isFirst = false;
+            continue;
+        }
+        text.push_back(box.description);
+    }
+
+    QVector<QString> translated = doTranslate(text, targetLang);
+    if(text.size() != translated.size())
+    {
+        qDebug() << "translateOCRResult: doTranslate failed";
+        return map;
+    }
+    for(int i = 0; i < text.size(); ++i)
+    {
+        map.insert(text[i], translated[i]);
+    }
+
+    return map;
 }

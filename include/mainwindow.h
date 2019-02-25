@@ -33,6 +33,8 @@ private:
     QPixmap nowShot;
     OCRResult nowOCRRes;
 
+    QMap<QString, QString> nowTranslateMap;
+
     QGraphicsScene scene;
     QGraphicsPixmapItem item;
 
